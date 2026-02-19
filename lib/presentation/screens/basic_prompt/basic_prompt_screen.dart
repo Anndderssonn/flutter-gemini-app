@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini_app/presentation/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -19,13 +20,26 @@ class BasicPromptScreen extends ConsumerWidget {
       body: Chat(
         messages: messages,
         onSendPressed: (types.PartialText partialText) {
-          ref
-              .read(basicChatProvider.notifier)
-              .addMessage(partialText: partialText, user: user);
+          // ref
+          //     .read(basicChatProvider.notifier)
+          //     .addMessage(partialText: partialText, user: user);
         },
         user: user,
         theme: DarkChatTheme(),
         showUserNames: true,
+        customBottomWidget: CustomBottomInput(
+          onSend: (prompt, {images = const []}) {
+            ref
+                .read(basicChatProvider.notifier)
+                .addMessage(partialText: prompt, user: user, images: images);
+          },
+        ),
+        // onAttachmentPressed: () async {
+        //   ImagePicker picker = ImagePicker();
+        //   final List<XFile> images = await picker.pickMultiImage(limit: 4);
+        //   if (images.isEmpty) return;
+        //   print(images);
+        // },
         // showUserAvatars: true,
         typingIndicatorOptions: TypingIndicatorOptions(
           typingUsers: isGeminiWriting ? [geminiUser] : [],

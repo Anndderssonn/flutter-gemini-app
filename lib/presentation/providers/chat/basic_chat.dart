@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:uuid/uuid.dart';
@@ -19,7 +20,15 @@ class BasicChat extends _$BasicChat {
     return [];
   }
 
-  void addMessage({required PartialText partialText, required User user}) {
+  void addMessage({
+    required PartialText partialText,
+    required User user,
+    List<XFile> images = const [],
+  }) {
+    if (images.isNotEmpty) {
+      _addTextMessageWithImages(partialText, user, images);
+      return;
+    }
     _addTextMessage(partialText, user);
   }
 
@@ -29,6 +38,19 @@ class BasicChat extends _$BasicChat {
     _geminiTextResponseStream(partialText.text);
   }
 
+  Future<void> _addTextMessageWithImages(
+    PartialText partialText,
+    User author,
+    List<XFile> images,
+  ) async {
+    for (XFile image in images) {
+      _crateImageMessage(image, author);
+    }
+    await Future.delayed(Duration(milliseconds: 10));
+    _crateTextMessage(partialText.text, author);
+    _geminiTextResponseStream(partialText.text, images: images);
+  }
+
   void _geminiTextResponse(String prompt) async {
     _setGeminiWritingStatus(true);
     final response = await gemini.getResponse(prompt);
@@ -36,9 +58,12 @@ class BasicChat extends _$BasicChat {
     _crateTextMessage(response, geminiUser);
   }
 
-  void _geminiTextResponseStream(String prompt) async {
+  void _geminiTextResponseStream(
+    String prompt, {
+    List<XFile> images = const [],
+  }) async {
     _crateTextMessage('Gemini is processing...', geminiUser);
-    gemini.getResponseStream(prompt).listen((event) {
+    gemini.getResponseStream(prompt, files: images).listen((event) {
       if (event.isEmpty) return;
       final updatedMessages = [...state];
       final updatedMessage = (updatedMessages.first as TextMessage).copyWith(
@@ -55,6 +80,18 @@ class BasicChat extends _$BasicChat {
       id: uuid.v4(),
       text: text,
       createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    state = [message, ...state];
+  }
+
+  Future<void> _crateImageMessage(XFile image, User author) async {
+    final message = ImageMessage(
+      author: author,
+      id: uuid.v4(),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      uri: image.path,
+      name: image.name,
+      size: await image.length(),
     );
     state = [message, ...state];
   }
