@@ -8,5 +8,9 @@ final appRouter = GoRouter(
       path: '/basic-prompt',
       builder: (context, state) => const BasicPromptScreen(),
     ),
+    GoRoute(
+      path: '/context-chat',
+      builder: (context, state) => const ChatContextScreen(),
+    ),
   ],
 );

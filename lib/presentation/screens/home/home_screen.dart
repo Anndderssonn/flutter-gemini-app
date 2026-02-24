@@ -19,6 +19,15 @@ class HomeScreen extends StatelessWidget {
             subtitle: const Text('Using a flash model'),
             onTap: () => context.push('/basic-prompt'),
           ),
+          ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.deepPurple,
+              child: Icon(Icons.history_outlined),
+            ),
+            title: const Text('Conversational chat'),
+            subtitle: const Text('Keep context messages'),
+            onTap: () => context.push('/context-chat'),
+          ),
         ],
       ),
     );
