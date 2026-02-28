@@ -2,3 +2,8 @@ export 'users/user_provider.dart';
 export 'chat/is_gemini_writing.dart';
 export 'chat/basic_chat.dart';
 export 'chat/chat_with_context.dart';
+export 'image/is_generating_provider.dart';
+export 'image/generated_history_provider.dart';
+export 'image/selected_art_provider.dart';
+export 'image/generated_images_provider.dart';
+export 'image/selected_image_provider.dart';

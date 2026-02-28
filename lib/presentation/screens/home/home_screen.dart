@@ -28,6 +28,15 @@ class HomeScreen extends StatelessWidget {
             subtitle: const Text('Keep context messages'),
             onTap: () => context.push('/context-chat'),
           ),
+          ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.green,
+              child: Icon(Icons.image_outlined),
+            ),
+            title: const Text('Image Generator'),
+            subtitle: const Text('Create and edit image with Gemini'),
+            onTap: () => context.push('/image-playground'),
+          ),
         ],
       ),
     );
